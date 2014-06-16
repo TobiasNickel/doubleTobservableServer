@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		doubleTobservable Chat
+	</title>
+	<link rel='stylesheet' href='/stylesheets/style.css' />
+	<script src="/javascripts/jquery.js"></script>
+	<script src="/javascripts/tobserver.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+        // init the socket
+  		var socket = io('/tobserver');
+		tobserver.utils.setSocket(socket);
+
+        // init Data
+		var app={posts:[]};
+            // under /data.json, and with param p you can query current data from a path
+        $.get("/data.json",{p:"app.posts"},function(res){
+            if(res.status)
+                tobserver.set("app.posts",res.data);
+            else
+                tobserver.set("app.posts",[]);
+        });
+        
+		app.username="";
+		app.message="";
+        
+        // avoid updating these paths over the net
+		tobserver.notifyee.locals.push("app.username");
+		tobserver.notifyee.locals.push("app.message");
+		
+        /**
+         * will send the current typed message
+         */
+		function sendMessage(){
+			if(app.username.length<2)return;
+			if(app.message.length==0)return;
+			tobserver.exec('app.posts.unshift',[{sender:app.username,message:app.message}]);
+			tobserver.set('app.message','')
+		}
+	</script>
+</head>
+<body>
+	<h1>doubleTobservable Chat</h1>
+	<input tobserver="path:'app.username',type:'value'" placeholder="name" type="text"/>
+	<div tobserver="path:'app',type:'htmlOption',filter:function(app){return app.username.length > 2;}">
+		<input tobserver="path:'message',type:'value'" placeholder="message" type="text"/>
+		<button onclick="sendMessage()">
+			senden
+		</button>
+	</div>
+	<ul tobserver="path:'app.posts',type:'htmlList'">
+		<li><b tobserver="sender"></b><br><span tobserver="message"></span></li>
+	</ul>
+</body>
+</html>
