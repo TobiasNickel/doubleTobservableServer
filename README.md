@@ -9,3 +9,15 @@ If you want to try out, you should know the basics of tObservableJS and then you
 
 
 During the week, I will add some more documentation with further instructions.
+
+#Installation
+to use this software, you need node.js installed. 
+
+download the repository, navigate on console to the src-folder. and run
+- npm install
+
+and 
+
+- node app.js
+
+then visit localhost:3000 in one or more  browser.
