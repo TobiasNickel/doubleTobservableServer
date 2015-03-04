@@ -1,7 +1,7 @@
 /**
  * @fileOverview
  * @author Tobias Nickel
- * @version 0.11
+ * @version 0.12
  */
 
 /**
@@ -668,7 +668,7 @@ var tobserver = (function (window, document, undefined) {
 					this.attr.beforeUpdate(this.element, function (element) {
             if(type == vt_disabled){
                 element.disabled=val;
-            } else if ((element.style[type] === undefined)  || type == vt_src || type == vt_class) {
+            } else if ((element.style[type] === undefined)  || type == vt_src || type == vt_class || type=='src') {
               if (element.getAttribute(type) == val)
                 return;
               if(val===false) element.removeAttribute(type, val);
