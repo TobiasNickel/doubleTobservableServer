@@ -4,10 +4,10 @@
 	<title>
 		doubleTobservable Chat
 	</title>
-	<link rel='stylesheet' href='/stylesheets/style.css' />
-	<script src="/javascripts/jquery.js"></script>
-	<script src="/javascripts/tobserver.js"></script>
-	<script src="/socket.io/socket.io.js"></script>
+	<link rel='stylesheet' href='stylesheets/style.css' />
+	<script src="javascripts/jquery.js"></script>
+	<script src="javascripts/tobserver.js"></script>
+	<script src="socket.io/socket.io.js"></script>
 	<script>
         // init the socket
   		var socket = io('/tobserver');
@@ -34,8 +34,8 @@
          * will send the current typed message
          */
 		function sendMessage(){
-			if(app.username.length<2)return;
-			if(app.message.length==0)return;
+			if(app.username.trim().length<2)return;
+			if(app.message.trim().length==0)return;
 			tobserver.exec('app.posts.unshift',[{sender:app.username,message:app.message}]);
 			tobserver.set('app.message','')
 		}
@@ -44,7 +44,7 @@
 <body>
 	<h1>doubleTobservable Chat</h1>
 	<input tobserver="path:'app.username',type:'value'" placeholder="name" type="text"/>
-	<div tobserver="path:'app',type:'htmlOption',filter:function(app){return app.username.length > 2;}">
+	<div tobserver="path:'app',type:'htmlOption',filter:function(app){return app.username.trim().length > 2;}">
 		<input tobserver="path:'message',type:'value'" placeholder="message" type="text"/>
 		<button onclick="sendMessage()">
 			senden
