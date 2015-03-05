@@ -48,6 +48,24 @@ app.get('/data.json',function(req,res){
 var routes = require('./routes/index');
 app.use('/', routes(tobserver,io));
 
+
+var fs = require('fs');
+var formidable = require('formidable');
+app.post('/upload.json', function(req, res,next) {
+    var form = new formidable.IncomingForm();
+    form.parse(req, function(err, fields, files) {
+        res.writeHead(200, {'content-type': 'text/plain'});
+        res.write('received upload:\n\n');
+        res.end("end");
+    });
+    form.on('end', function(fields, files) {
+        fs.createReadStream(this.openedFiles[0].path).pipe(
+            fs.createWriteStream('./public/uploads/'+this.openedFiles[0].name)
+        );
+    });
+});
+
+
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');

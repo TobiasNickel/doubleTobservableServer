@@ -1,12 +1,13 @@
 /**
  * @fileOverview
  * @author Tobias Nickel
- * @version 0.12
+ * @version 0.13
  */
 
 /**
  * Object, that contains methods, that can not run in StrictMode
  */
+if(typeof window !== 'undefined')
 var tObserverNoStricts=(function(){
     //view types
     var vt_hOption=8,//"htmloption",
@@ -335,12 +336,12 @@ var tobserver = (function (window, document, undefined) {
 	 *
 	 * @returns {void}
 	 */
-	Tobservable.prototype.notify = function (path, data, run, online, socket, round) {
+	Tobservable.prototype.notify = function (path, data, run, online, socket, round,force) {
 		if (path === undefined) path = "";
 		if (round === undefined) round = new Date().getTime() + "" + Math.random();
 		path = addNameToPath(this.path, path);
 		var index=this.notifyee.commands.indexOfIn(path,"path");
-		if (run || (data!==tobserver.getData(path)) && (index === -1 || !this.notifyee.commands[index].run )){
+		if (run || force || (data!==tobserver.getData(path)) && (index === -1 || !this.notifyee.commands[index].run )){
 			this.notifyee.commands.push({
 				path:path,
 				data:data,
@@ -559,6 +560,7 @@ var tobserver = (function (window, document, undefined) {
 	 * @param {tobservable} tobserver
 	 * @returns {tobservable.StdElementView}
 	 */
+  if(window.document)
 	Tobservable.prototype.StdElementView = function () {
         //view types
         var vt_hOption=8,//"htmloption",
@@ -594,7 +596,7 @@ var tobserver = (function (window, document, undefined) {
 					attr.defaultValue[i] = element.getAttribute(attr.type);
 				}
 				if (attr.type[i] === vt_v) {
-					this.folowElement(element);
+					this.followElement(element);
 				}
 			}
 			attr.beforeAdd = attr.beforeAdd !== undefined ? attr.beforeAdd : tobserver.utils.stdViewBehavior.beforeAdd;
@@ -826,14 +828,14 @@ var tobserver = (function (window, document, undefined) {
 				}
 			}
 		};
-		StdElementView.prototype.folowElement = function (element) {
+		StdElementView.prototype.followElement = function (element) {
 			var change = function () {
 				var attr = element.attr;
 				for (var i in attr.path) {
 					if (attr.type[i] === vt_v) {
 						var value = element.value;
 						var type = element.getAttribute("type");
-						if (type !== null && type.toLocaleLowerCase().trim() === "number")
+						if (type !== null && (type.toLocaleLowerCase().trim() === "number" || type.toLocaleLowerCase().trim() === "range"))
 							value = parseFloat(value);
 						if (type !== null && type.toLocaleLowerCase().trim() === "checkbox")
 							value = element.checked;
@@ -966,7 +968,8 @@ var tobserver = (function (window, document, undefined) {
 				var sourceData = tobserver.getData(elementPath);
 				var array = tobserver.getData(arrayPath);
 				var arrayElementPath=arrayPath + "." + array.indexOf(sourceData);
-				tobserver.notify(arrayElementPath,"someCrapthatWIllneverBeAValue5142f7d9aj8496547c6fc6gca37f215cf",false,true,undefined, round);
+				//tobserver.notify(arrayElementPath,"someCrapthatWIllneverBeAValue5142f7d9aj8496547c6fc6gca37f215cf",false,true,undefined, round);
+			  tobserver.notify(arrayElementPath,sourceData,false,true,undefined, round, true);
 			};
 		},
 		/**
@@ -983,6 +986,7 @@ var tobserver = (function (window, document, undefined) {
                 var index=array.indexOf(sourceData);
 				if (pathParts[0] !== undefined && index==pathParts[0]) {
 					if (array[pathParts[0]] !== sourceData) {
+						//tobserver.notify(elementPath,"someCrapthatWIllneverBeAValue5142f7d9ja8496547g6fc65ca37f215cf",false,true,undefined, round);
 						tobserver.notify(elementPath,"someCrapthatWIllneverBeAValue5142f7d9ja8496547g6fc65ca37f215cf",false,true,undefined, round);
 					}
 				}
